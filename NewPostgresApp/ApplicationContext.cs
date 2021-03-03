@@ -7,11 +7,7 @@ namespace NewPostgresApp
 {
     public class ApplicationContext : DbContext
     {
-       /* static ApplicationContext()
-        {
-           Database.SetInitializer<ApplicationContext>(new BlogInitializer());
-        }
-        */
+       
         public DbSet<Writers> Writers { get; set; }
         public DbSet<Posts> Posts { get; set; }
 
