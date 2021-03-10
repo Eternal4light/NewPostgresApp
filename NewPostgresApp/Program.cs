@@ -1,34 +1,44 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using static System.Console;
+using Ninject;
+using Ninject.Modules;
+
+
 
 namespace NewPostgresApp
 {
     class Program
     {
-       
+        private static StandardKernel _kernel = new StandardKernel();
+
+        private static void Register()
+        {
+            _kernel.Bind<IContextFactory>().To<ContextFactory>();
+        }
+
         static void Main(string[] args)
         {
-           
-            
-            
-            // получение данных
-            using (ApplicationContext db = new ApplicationContext())
+            Register();
+
+            var factory = _kernel.Get<IContextFactory>();
+
+            using(var context = factory.GetContext())
             {
-                db.Database.EnsureCreated();
+                context.Database.EnsureCreated();
 
-                // ShowEverything(db);
-
-                ShowTableWrToPost(db);
-
-
-                //db.Database.EnsureDeleted();  // Удаляю базу после всех действий
-
-                //ChangeName(db);
-                //Delete2posts(db);
-                //AddNewPost(db);
+                ShowTableWrToPost(context);
             }
+
+            
+            //db.Database.EnsureDeleted();  // Удаляю базу после всех действий
+            //ShowEverything(db);
+            //ChangeName(db);
+            //Delete2posts(db);
+            //AddNewPost(db);
+
 
 
             ReadLine();
@@ -165,5 +175,8 @@ namespace NewPostgresApp
             WriteLine($"|{newPost.ID} | {newPost.Name} | {newPost.Content} | {newPost.WriterId}");
             ReadLine();
         }
+
+       
+       
     }
 }
