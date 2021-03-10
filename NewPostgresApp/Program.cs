@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using static System.Console;
 
@@ -37,18 +38,21 @@ namespace NewPostgresApp
         {
             var writers = db.Writers.ToList();
             var posts = db.Posts.ToList();
-            
+
             var result = from ps in posts
                          join wr in writers on ps.WriterId equals wr.ID
 
                          group ps by wr.Name into g
+
+                         select new { WrName = g.Key, PostNames = String.Join(", ", g.Select(x => x.Name).ToList()) };
                          
-                        // select new { WrName = g.Key, PostNames = };
-                       select new { WrName = g.Key, PostNames = g.SelectMany(x => x.Name) };
-                       
-            foreach (var item in result)
-               WriteLine($"{item.WrName} - {item.PostNames}");
-               
+
+            foreach ( var item in result)
+            {
+                WriteLine($"{item.WrName} -- {item.PostNames}");
+                
+            }
+            ReadLine();
         }
 
         private static void ShowEverything(ApplicationContext db)
