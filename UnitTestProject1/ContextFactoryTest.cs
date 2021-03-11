@@ -40,20 +40,16 @@ namespace UnitTestProject1
         public void ContextFactoryMock_OnGetContext_ShouldReturnContext()
         {
             //Arrange
-            
-            //Создание Mock-объекта
             var ContextFactoryMock = new Moq.Mock<IContextFactory>();
-            //Настройка
-            ApplicationContext nullApContx = null;
-            ContextFactoryMock.Setup(obj => obj.GetContext()).Returns(nullApContx);
-            //Проверка
+            ContextFactoryMock.Setup(obj => obj.GetContext()).Returns<ApplicationContext>(null);
+
             IContextFactory factory = ContextFactoryMock.Object;
 
             //Act
             var context = factory.GetContext();
 
             //Assert
-            Assert.IsNotNull(context);
+            Assert.IsNull(context);
         }
     }
 }

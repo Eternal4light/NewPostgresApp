@@ -5,8 +5,7 @@ using System.Linq;
 using static System.Console;
 using Ninject;
 using Ninject.Modules;
-
-
+using System.IO;
 
 namespace NewPostgresApp
 {
@@ -19,6 +18,7 @@ namespace NewPostgresApp
             _kernel.Bind<IContextFactory>().To<ContextFactory>();
         }
 
+
         static void Main(string[] args)
         {
             Register();
@@ -29,20 +29,19 @@ namespace NewPostgresApp
             {
                 context.Database.EnsureCreated();
 
-                ShowTableWrToPost(context);
+                GenerateExcelFile(context);
             }
-
-            
-            //db.Database.EnsureDeleted();  // Удаляю базу после всех действий
-            //ShowEverything(db);
-            //ChangeName(db);
-            //Delete2posts(db);
-            //AddNewPost(db);
-
-
-
-            ReadLine();
         }
+
+
+        private static void GenerateExcelFile(ApplicationContext context)
+        {
+            var reportData = new BlogReporter().GetReport(context);
+            var reportExcel = new ExcelGenerator().Generate(reportData);
+
+            File.WriteAllBytes("Report.xlsx", reportExcel);
+        }
+
 
         private static void ShowTableWrToPost(ApplicationContext db)
         {
